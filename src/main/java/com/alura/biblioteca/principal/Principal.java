@@ -8,6 +8,8 @@ import com.alura.biblioteca.repository.MaestroxRepository;
 import com.alura.biblioteca.servicios.ConsumoAPIs;
 import com.alura.biblioteca.servicios.ConvertirDatos;
 import java.util.*;
+import java.util.stream.Collectors;
+
 //
 // Listar toda la biblioteca https://gutendex.com/books/
 // Buscar por titulo del libro y derecho de autor https://gutendex.com/books/?search=dickens%20great&copyright=true
@@ -66,7 +68,7 @@ public class Principal {
                         3 - Listar Autores Registrados
                         4 - Listar Autores Vivos en un Determinado Año
                         5 - Listar Libros por Idioma
-                        6 - Listar Bibioteca
+                        6 - Listar Bibioteca en la API
                         7 - Guardar Biblioteca y Libros
                         8 - Listar Biblioteca y Libros en Base de Datos
                     
@@ -91,7 +93,7 @@ public class Principal {
                     listarLibrosIdioma();
                     break;
                 case 6:
-                    listar_biblioteca();
+                    listarBibliotecaDeLaAPI();
                     break;
                 case 7:
                     GuardarBibliotecaLibrosDB();
@@ -109,9 +111,9 @@ public class Principal {
         }
     }
 
-
     public void buscarTituloLibro(){
         Scanner tituloLibro = new Scanner(System.in);
+        System.out.println("Por favor ingrese el titulo del libro a buscar:");
         var titulo = tituloLibro.nextLine();
         titulo = "%20"+titulo.replace(" ","+");
         //
@@ -143,7 +145,7 @@ public class Principal {
         String previous = Optional.ofNullable(teca.getPrevious()).orElse("N/D");
         System.out.println("\n *** Datos Generales de la Biblioteca *** ");
         System.out.println("Count: "+count + " Next: "+next+" Previous: "+previous);
-        System.out.println("\n *** Libro Registrados - Derechos de Autor *** ");
+        System.out.println("\n *** Libro Registrados con Derechos de Autor *** ");
         // Imprimimos en partalla el libro
         teca.getResults().forEach(System.out::println);
         System.out.println("\n");
@@ -151,71 +153,57 @@ public class Principal {
 
     public void listarAutoresRegristrados() {
         //
-//        String x_titulo = URL_BASE + "?copyright=true";
-//        var json = Api.obtenerDApi(x_titulo);
-//        var convertir = new ConvertirDatos();
-//        Biblioteca teca = convertir.obtenerDatos(json, Biblioteca.class);
-//        // Imprimimos
-//        String count = Optional.ofNullable(teca.getCount()).orElse("N/D");
-//        String next = Optional.ofNullable(teca.getNext()).orElse("N/D");
-//        String previous = Optional.ofNullable(teca.getPrevious()).orElse("N/D");
-//        System.out.println("\n *** Datos Generales de la Biblioteca *** ");
-//        System.out.println("Count: " + count + " Next: " + next + " Previous: " + previous);
-//        System.out.println("\n *** Listado de Autores Registrados *** ");
-//        teca.getResults()
-//                .stream()
-//                .flatMap(a -> a.getAuthors().stream()).distinct()
-//                .collect(Collectors.toList()).forEach(System.out::println);
-//        System.out.println("\n");
-
-        // Imprimimos en partalla el libro
-        // teca.getResults().get(1).getAuthors().forEach(System.out::println);
-        //List<Autor> listaAutoresR = teca.getResults(). .stream().flatMap(a -> a.getAuthors()).collect(Collectors.toList());
-        //List<Autor> listaAutoresR = teca.getResults().stream().flatMap(a -> a.getAuthors()).toList();
+        String x_titulo = URL_BASE + "?copyright=true";
+        var json = Api.obtenerDApi(x_titulo);
+        var convertir = new ConvertirDatos();
+        Biblioteca teca = convertir.obtenerDatos(json, Biblioteca.class);
+        // Imprimimos
+        String count = Optional.ofNullable(teca.getCount()).orElse("N/D");
+        String next = Optional.ofNullable(teca.getNext()).orElse("N/D");
+        String previous = Optional.ofNullable(teca.getPrevious()).orElse("N/D");
+        System.out.println("\n *** Datos Generales de la Biblioteca *** ");
+        System.out.println("Count: " + count + " Next: " + next + " Previous: " + previous);
+        System.out.println("\n *** Listado de Autores Registrados *** ");
         //
-        //List<Autor> listaAutoresRx = teca.getResults()
-        //        .stream()
-        //        .flatMap(a -> a.getAuthors().stream()).distinct()
-        //        .collect(Collectors.toList());
-        //listaAutoresRx.forEach(System.out::println);
-        //
-        //for(Libro listaL : teca.getResults()){
-        //    System.out.println("Id: " + listaL.getId());
-        //    for(Autor autorL : listaL.getAuthors()){
-        //        System.out.println("Autores: " + autorL);
-        //        listaL.getAuthors().stream().distinct()
-        //    }
-        //}
-
+        Set<String> autoresUnicos = new HashSet<>(); // se asignan los valores de autores evitando su duplicidad
+        teca.getResults().stream()
+                .flatMap(libro -> libro.getAuthors().stream())
+                .filter(autor -> autoresUnicos.add(autor.getName())) // Agregar autor al conjunto, si no está presente
+                .forEach(System.out::println);
+        System.out.println("\n");
     }
 
     public void listarAutoresVivosYear(){
-//        Scanner yearDeterminado = new Scanner(System.in);
-//        var year = yearDeterminado.nextLine();
-//        String x_titulo = URL_BASE;
-//        System.out.println(x_titulo);
-//        var json = Api.obtenerDApi(x_titulo);
-//        var convertir = new ConvertirDatos();
-//        Biblioteca teca = convertir.obtenerDatos(json, Biblioteca.class);
-//        // Imprimimos
-//        String count = Optional.ofNullable(teca.getCount()).orElse("N/D");
-//        String next = Optional.ofNullable(teca.getNext()).orElse("N/D");
-//        String previous = Optional.ofNullable(teca.getPrevious()).orElse("N/D");
-//        System.out.println("\n *** Datos Generales de la Biblioteca *** ");
-//        System.out.println("Count: " + count + " Next: "+next+" Previous: " + previous);
-//        System.out.println("\n *** Autores Registrados en el Año: " + year  + " *** ");
-//        // Imprimimos en partalla el libro
-//        teca.getResults()
-//                .stream()
-//                .flatMap(a -> a.getAuthors().stream()).distinct()
-//                .filter(a -> Integer.valueOf(a.getDeath_year()) < Integer.valueOf(year))
-//                .collect(Collectors.toList()).forEach(System.out::println);
-//        System.out.println("\n");
+        Scanner yearDeterminado = new Scanner(System.in);
+        System.out.println("Por favor ingresa el año a buscar:");
+        var year = yearDeterminado.nextLine();
+        String x_titulo = URL_BASE;
+        System.out.println(x_titulo);
+        var json = Api.obtenerDApi(x_titulo);
+        var convertir = new ConvertirDatos();
+        Biblioteca teca = convertir.obtenerDatos(json, Biblioteca.class);
+        // Imprimimos
+        String count = Optional.ofNullable(teca.getCount()).orElse("N/D");
+        String next = Optional.ofNullable(teca.getNext()).orElse("N/D");
+        String previous = Optional.ofNullable(teca.getPrevious()).orElse("N/D");
+        System.out.println("\n *** Datos Generales de la Biblioteca *** ");
+        System.out.println("Count: " + count + " Next: "+next+" Previous: " + previous);
+        System.out.println("\n *** Autores Registrados en el Año: " + year  + " *** ");
+        // Imprimimos en partalla el libro
+        Set<String> autoresUnicos = new HashSet<>();
+        teca.getResults()
+                .stream()
+                .flatMap(a -> a.getAuthors().stream()).distinct()
+                .filter(a -> Integer.valueOf(a.getDeath_year()) < Integer.valueOf(year))
+                .filter(autor -> autoresUnicos.add(autor.getName()))
+                .forEach(System.out::println);
+        System.out.println("\n");
     }
 
     public void listarLibrosIdioma(){
 
         Scanner idiomaBuscar = new Scanner(System.in);
+        System.out.println("Por favor ingresa uno o varios idiomas (en) o (en,fr,es)...");
         var idiomas = idiomaBuscar.nextLine();
         String x_titulo = URL_BASE+"?languages="+ idiomas;
         System.out.println(x_titulo);
@@ -239,44 +227,21 @@ public class Principal {
 
     }
 
-    public void listar_biblioteca(){
-        //var consumoApi = new ConsumoAPIs();
-        System.out.println("Por quE AUIIIIIIIIIII..");
+    public void listarBibliotecaDeLaAPI(){
         var json = Api.obtenerDApi(URL_BASE);
         var convertir = new ConvertirDatos();
         Biblioteca teca = convertir.obtenerDatos(json, Biblioteca.class);
-        //teca.getResults().forEach(System.out::println);
         //
         String count = Optional.ofNullable(teca.getCount()).orElse("N/D");
         String next = Optional.ofNullable(teca.getNext()).orElse("N/D");
         String previous = Optional.ofNullable(teca.getPrevious()).orElse("N/D");
+        //
         System.out.println("\n *** Datos Generales de la Biblioteca *** ");
         System.out.println("Count: "+count + " Next: "+next+" Previous: "+previous);
-        System.out.println("\n *** Listado Completo de la Biblioteca *** ");
         //
-        //repoBiblio.save(teca);
-        //
-        //        Libro dLibros = (Libro) teca.getResults().get(0);
-//        repositorio.save(dLibros);
-
-//        List<Biblioteca> btca = repoBiblio.findAll();
-//        btca.stream().sorted(Comparator.comparing((Biblioteca::getId)))
-//                .forEach(System.out::println);
-//        System.out.println("\n");
-
-        //teca.getResults().forEach(System.out::println);
-        //System.out.println("\n");
-        //
-        //la siguientes es una forma de hacer la iteracion.
-        //for (int i = 0; i <= teca.getResults().size()-1; i++) {
-        //    System.out.println(teca.getResults().get(i).getId());
-        //    System.out.println(teca.getResults().get(i).getTitle());
-        //    System.out.println(teca.getResults().get(i).getLanguages());
-        //    System.out.println(teca.getResults().get(i).getCopyright());
-        //    System.out.println(teca.getResults().get(i).getDownload_count());
-        //    System.out.println(teca.getResults().get(i).getAuthors());
-        //    System.out.println("\n");
-        //}
+        System.out.println("\n *** Listado Completo de la Libros en API *** ");
+        teca.getResults().forEach(System.out::println);
+        System.out.println("\n");
     }
 
     public void GuardarBibliotecaLibrosDB(){
@@ -291,6 +256,7 @@ public class Principal {
         teca.setLibros(teca.getResults());
         //
         repoBiblio.save(teca);
+        System.out.println("Datos guardados en la base de datos de la biblioteca");
     }
 
     public  void listarBibliotecaLibrosDB(){
@@ -306,45 +272,33 @@ public class Principal {
         System.out.println("\n");
     }
 
-    public void listar_todo(){
-//        System.out.println(" --> Listando todos los libros <--");
-//        ConsumoAPIs cApi = new ConsumoAPIs();
-//        try {
-//            var json = Api.obtenerDApi(URL_BASE);
-//            json.getResults().forEach(System.out::println);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
+    //Otras maneras de acceder al conversor y traer los datos mapeados en distintos objetos (list, map, arrays..)
+    public void listar_librosConLista(){
+        //        System.out.println(" --> Listando todos los libros <--");
+        //        var json = Api.obtenerDatosApi(URL_BASE);
+        //        System.out.println("Datos de Json: " + json);
+        //        ConvertirDatos conversor = new ConvertirDatos();
+        //        List<LibroRecord> libros = new ArrayList<>();
+        //        var datos = conversor.obtenerDatos(json, libros.getClass());
+        //        System.out.println("Datos finales: " + datos);
     }
-
-    public void listar_libros(){
-//        System.out.println(" --> Listando todos los libros <--");
-//        var json = Api.obtenerDatosApi(URL_BASE);
-//        System.out.println("Datos de Json: " + json);
-//        ConvertirDatos conversor = new ConvertirDatos();
-//        List<LibroRecord> libros = new ArrayList<>();
-//        var datos = conversor.obtenerDatos(json, libros.getClass());
-//        System.out.println("Datos finales: " + datos);
+    public void listar_librosConMap(){
+        //        System.out.println(" --> Listando todos los libros <--");
+        //        Map<String, String> json = null;
+        //        try {
+        //            json = ConsumoAPIs.apiRtaMap(URL_BASE);
+        //        } catch (NoSuchFieldException e) {
+        //            throw new RuntimeException(e);
+        //        } catch (IllegalAccessException e) {
+        //            throw new RuntimeException(e);
+        //        }
+        //        System.out.println("Datos de Json: " + json);
+        ////        ConvertirDatos conversor = new ConvertirDatos();
+        ////        List<RecordLibro> libros = new ArrayList<>();
+        ////        var datos = conversor.obtenerDatos(json, libros.getClass());
+        ////        System.out.println("Datos finales: " + datos);
     }
-
-    public void listar_librosMap(){
-//        System.out.println(" --> Listando todos los libros <--");
-//        Map<String, String> json = null;
-//        try {
-//            json = ConsumoAPIs.apiRtaMap(URL_BASE);
-//        } catch (NoSuchFieldException e) {
-//            throw new RuntimeException(e);
-//        } catch (IllegalAccessException e) {
-//            throw new RuntimeException(e);
-//        }
-//        System.out.println("Datos de Json: " + json);
-////        ConvertirDatos conversor = new ConvertirDatos();
-////        List<RecordLibro> libros = new ArrayList<>();
-////        var datos = conversor.obtenerDatos(json, libros.getClass());
-////        System.out.println("Datos finales: " + datos);
-    }
-
-    public void listar_librosArray(){
+    public void listar_librosConArray(){
         //System.out.println(ConsumoAPIs.listaArray2(URL_BASE));
     }
 }

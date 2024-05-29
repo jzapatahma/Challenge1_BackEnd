@@ -22,14 +22,13 @@ public class Libro {
     @JsonProperty("download_count")
     private Integer download_count;
 
-
     @ManyToOne
     //@JoinColumn(name = "biblioteca_id") Averiguar esta linea que funcion tiene o si reemplaza otra funcion de asignacion de id en tablas detalles.
     private Biblioteca biblioteca;
 
-//    @Transient
-//    @JsonProperty("authors")
-//    private List<Autor> authors;
+    @Transient
+    @JsonProperty("authors")
+    private List<Autor> authors;
 //    @Transient
 //    @JsonProperty("languages")
 //    private List<String> languages;
@@ -63,13 +62,12 @@ public class Libro {
         this.title = title;
     }
 
-//    public List<Autor> getAuthors() {
-//        return authors;
-//    }
-//
-//    public void setAuthors(List<Autor> authors) {
-//        this.authors = authors;
-//    }
+    public List<Autor> getAuthors() {
+        return authors;
+    }
+    public void setAuthors(List<Autor> authors) {
+        this.authors = authors;
+    }
 //    //
 //    public List<String> getLanguages() {
 //        return languages;

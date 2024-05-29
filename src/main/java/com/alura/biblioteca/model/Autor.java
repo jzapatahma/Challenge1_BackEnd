@@ -26,10 +26,10 @@ public class Autor {
         this.birth_year = birth_year;
         this.death_year = death_year;
     }
+    public Autor() {    }
 
     public Long getId() { return Id; }
     public void setId(Long id) { Id = id;}
-    public Autor() {    }
     public String getName() {
         return name;
     }
