@@ -7,78 +7,71 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name ="tblBibliotecas")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Table(name="tblBibliotecas")
 public class Biblioteca {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
-    @JsonProperty("count")
-    private String count;
-    @JsonProperty("next")
-    private String next;
-    @JsonProperty("previous")
-    private String previous;
-
-    @OneToMany(mappedBy = "biblioteca", cascade = CascadeType.ALL)
+    private Long Idbca;
+    @Column(unique = true)
+    private String nombreBiblioteca;
+    private String contadorBiblioteca;
+    private String siguienteBiblioteca;
+    private String anteriorBiblioteca;
+    //    @Transient
+    @OneToMany(mappedBy = "biblioteca", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Libro> libros;
 
-    @Transient
-    @JsonProperty("results")
-    private List<Libro> results;
-
-    // Constructor con parametros de entrada
-    public Biblioteca(String count, String next, String previous, List<Libro> results) {
-        this.count = count;
-        this.next = next;
-        this.previous = previous;
-        this.results = results;
+    public Biblioteca(BibliotecaRecord bR){
+        this.nombreBiblioteca = "Biblioteca Gutendex"; // creamos este campo para hacerlo unico en JPA y evita que se guarde varias veces el mismo registro en la base de datos.
+        this.contadorBiblioteca = bR.contador();
+        this.siguienteBiblioteca = bR.link_siguiente();
+        this.anteriorBiblioteca = bR.link_anterior();
+        this.libros = bR.libros().stream()
+                .map(libroRecord -> new Libro()).toList();
+        //.collect(Collectors.toList());
     }
-
-    // Contructor vacio
+    // Constructor vacio
     public Biblioteca() {
     }
 
-    // Getters y Setters
-    public Long getId() {
-        return Id;
+    public Long getIdbca() {
+        return Idbca;
     }
 
-    public void setId(Long id) {
-        Id = id;
+    public void setIdbca(Long idbca) {
+        Idbca = idbca;
     }
 
-    public String getCount() {
-        return count;
+    public String getNombreBiblioteca() {
+        return nombreBiblioteca;
     }
 
-    public void setCount(String count) {
-        this.count = count;
+    public void setNombreBiblioteca(String nombreBiblioteca) {
+        this.nombreBiblioteca = nombreBiblioteca;
     }
 
-    public String getNext() {
-        return next;
+    public String getContadorBiblioteca() {
+        return contadorBiblioteca;
     }
 
-    public void setNext(String next) {
-        this.next = next;
+    public void setContadorBiblioteca(String contadorBiblioteca) {
+        this.contadorBiblioteca = contadorBiblioteca;
     }
 
-    public String getPrevious() {
-        return previous;
+    public String getSiguienteBiblioteca() {
+        return siguienteBiblioteca;
     }
 
-    public void setPrevious(String previous) {
-        this.previous = previous;
+    public void setSiguienteBiblioteca(String siguienteBiblioteca) {
+        this.siguienteBiblioteca = siguienteBiblioteca;
     }
 
-    public List<Libro> getResults() {
-        return results;
+    public String getAnteriorBiblioteca() {
+        return anteriorBiblioteca;
     }
 
-    public void setResults(List<Libro> results) {
-        this.results = results;
+    public void setAnteriorBiblioteca(String anteriorBiblioteca) {
+        this.anteriorBiblioteca = anteriorBiblioteca;
     }
 
     public List<Libro> getLibros() {
@@ -86,18 +79,18 @@ public class Biblioteca {
     }
 
     public void setLibros(List<Libro> libros) {
-        // La siguiente linea asigna el Id de Biblioteca a cada registro de Libro.
-        libros.forEach(e ->e.setBiblioteca(this));
+        libros.forEach(l -> l.setBiblioteca(this));
         this.libros = libros;
     }
 
     @Override
     public String toString() {
-        return "Biblioteca{" +
-                "Id=" + Id +
-                ", count='" + count + '\'' +
-                ", next='" + next + '\'' +
-                ", previous='" + previous + '\'' +
-                '}';
+        return
+                "  Idbca=" + Idbca +
+                        ", nombreBiblioteca='" + nombreBiblioteca + '\'' +
+                        ", contadorBiblioteca='" + contadorBiblioteca + '\'' +
+                        ", siguienteBiblioteca='" + siguienteBiblioteca + '\'' +
+                        ", anteriorBiblioteca='" + anteriorBiblioteca + '\'' +
+                        ", libros=" + libros ;
     }
 }

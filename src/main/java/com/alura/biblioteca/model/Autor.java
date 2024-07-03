@@ -8,66 +8,70 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "tblAutores")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
-    @Column(unique = true)
-    @JsonProperty("name")
-    private String name;
-    @JsonProperty("birth_year")
-    private String birth_year;
-    @JsonProperty("death_year")
-    private String death_year;
+    private Long Idaor;
+    private String nombreAutor;
+    private Integer nacimientoAutor;
+    private Integer fallecimientoAutor;
+    @ManyToOne
+    //@JoinColumn(name = "libro_idlro")
+    private Libro libro;
+    //
+    public Autor() {
+    }
+    public Autor(Long Id, AutorRecord ar) {
+        this.nombreAutor = ar.nombre();
+        this.nacimientoAutor = ar.nacimiento();
+        this.fallecimientoAutor = ar.fallecimiento();
+    }
 
-    public Autor(String name, String birth_year, String death_year) {
-        this.name = name;
-        this.birth_year = birth_year;
-        this.death_year = death_year;
+    public Long getIdaor() {
+        return Idaor;
     }
-    public Autor() {    }
 
-    public Long getId() { return Id; }
-    public void setId(Long id) { Id = id;}
-    public String getName() {
-        return name;
+    public void setIdaor(Long idaor) {
+        Idaor = idaor;
     }
-    public void setName(String name) {
-        this.name = name;
+
+    public String getNombreAutor() {
+        return nombreAutor;
     }
-    public String getBirth_year() {
-        return birth_year;
+
+    public void setNombreAutor(String nombreAutor) {
+        this.nombreAutor = nombreAutor;
     }
-    public void setBirth_year(String birth_year) {
-        this.birth_year = birth_year;
+
+    public Integer getNacimientoAutor() {
+        return nacimientoAutor;
     }
-    public String getDeath_year() {
-        return death_year;
+
+    public void setNacimientoAutor(Integer nacimientoAutor) {
+        this.nacimientoAutor = nacimientoAutor;
     }
-    public void setDeath_year(String death_year) {
-        this.death_year = death_year;
+
+    public Integer getFallecimientoAutor() {
+        return fallecimientoAutor;
     }
-    public Autor unwrap(Object o) {return null;}
+
+    public void setFallecimientoAutor(Integer fallecimientoAutor) {
+        this.fallecimientoAutor = fallecimientoAutor;
+    }
+
+    public Libro getLibro() {
+        return libro;
+    }
+    public void setLibro(Libro libro) {
+        this.libro = libro;
+    }
 
     @Override
     public String toString() {
-        return  "name='" + name + '\'' +
-                ", birth_year='" + birth_year + '\'' +
-                ", death_year='" + death_year + '\'' ;
+        return  "  Idaor=" + Idaor +
+                ", nombreAutor='" + nombreAutor + '\'' +
+                ", nacimientoAutor=" + nacimientoAutor +
+                ", fallecimientoAutor=" + fallecimientoAutor +
+                ", libro=" + libro ;
     }
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        Autor autor = (Autor) o;
-//        return Objects.equals(name, autor.name);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(name);
-//    }
-
 }

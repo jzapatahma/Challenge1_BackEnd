@@ -6,91 +6,79 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "tblLibros")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Table(name="tblLibros")
 public class Libro {
-    @Id
+    @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
-    //
-    @JsonProperty("id")
-    private Integer idInterno;
-    @JsonProperty("title")
-    private String title;
-    @JsonProperty("copyright")
-    private Boolean copyright;
-    @JsonProperty("download_count")
-    private Integer download_count;
-
+    private Long Idlro;
+    private Integer idLibro;
+    private String tituloLibro;
+    private Boolean derechosAutorLibro;
+    //@Column(name="contadorDescargas") // se usa para ponerle otro nombre distinto en la base de daotos.
+    private Integer contadorDescargasLibro;
+    //private List<String> languages;
     @ManyToOne
-    //@JoinColumn(name = "biblioteca_id") Averiguar esta linea que funcion tiene o si reemplaza otra funcion de asignacion de id en tablas detalles.
+    //@JoinColumn(name = "biblioteca_idbca")
     private Biblioteca biblioteca;
-
-    @Transient
-    @JsonProperty("authors")
-    private List<Autor> authors;
-//    @Transient
-//    @JsonProperty("languages")
-//    private List<String> languages;
-
-    public Libro(Integer idInterno, String title, Boolean copyright, Integer download_count) {
-        this.idInterno = idInterno;
-        this.title = title;
-//        this.authors = authors;
-//        this.languages = languages;
-        this.copyright = copyright;
-        this.download_count = download_count;
-    }
-
-    public Libro() {
-    }
-
+    //    @Transient
+    @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER) // cambie FechType.EAGER
+    private List<Autor> autores;
     //
-    public Integer getIdInterno() {
-        return idInterno;
+    public Libro(){}
+    public Libro(Long Id, LibroRecord lr) {
+        //this.Id = Id;
+        this.idLibro = lr.idInterno();
+        this.tituloLibro = lr.titulo();
+        this.derechosAutorLibro = lr.derechosAutor();
+        this.contadorDescargasLibro = lr.contadorDescargas();
     }
 
-    public void setIdInterno(Integer idInterno) {
-        this.idInterno = idInterno;
+    public Long getIdlro() {
+        return Idlro;
     }
 
-    public String getTitle() {
-        return title;
+    public void setIdlro(Long idlro) {
+        Idlro = idlro;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public Integer getIdLibro() {
+        return idLibro;
+    }
+    public void setIdLibro(Integer idLibro) {
+        this.idLibro = idLibro;
     }
 
-    public List<Autor> getAuthors() {
-        return authors;
-    }
-    public void setAuthors(List<Autor> authors) {
-        this.authors = authors;
-    }
-//    //
-//    public List<String> getLanguages() {
-//        return languages;
-//    }
-//
-//    public void setLanguages(List<String> languages) {
-//        this.languages = languages;
-//    }
-    //
-    public Boolean getCopyright() {
-        return copyright;
+    public String getTituloLibro() {
+        return tituloLibro;
     }
 
-    public void setCopyright(Boolean copyright) {
-        this.copyright = copyright;
+    public void setTituloLibro(String tituloLibro) {
+        this.tituloLibro = tituloLibro;
     }
 
-    public Integer getDownload_count() {
-        return download_count;
+    public Boolean getDerechosAutorLibro() {
+        return derechosAutorLibro;
     }
 
-    public void setDownload_count(Integer download_count) {
-        this.download_count = download_count;
+    public void setDerechosAutorLibro(Boolean derechosAutorLibro) {
+        this.derechosAutorLibro = derechosAutorLibro;
+    }
+
+    public Integer getContadorDescargasLibro() {
+        return contadorDescargasLibro;
+    }
+
+    public void setContadorDescargasLibro(Integer contadorDescargasLibro) {
+        this.contadorDescargasLibro = contadorDescargasLibro;
+    }
+
+    public List<Autor> getAutores() {
+        return autores;
+    }
+
+    public void setAutores(List<Autor> autores) {
+        autores.forEach(a -> a.setLibro(this));
+        this.autores = autores;
     }
 
     public Biblioteca getBiblioteca() {
@@ -103,11 +91,12 @@ public class Libro {
 
     @Override
     public String toString() {
-        return "Libro{" +
-                ", idInterno=" + idInterno +
-                ", title='" + title + '\'' +
-                ", copyright=" + copyright +
-                ", download_count=" + download_count +
-                '}';
+        return  "  Idlro=" + Idlro +
+                ", idLibro=" + idLibro +
+                ", tituloLibro='" + tituloLibro + '\'' +
+                ", derechosAutorLibro=" + derechosAutorLibro +
+                ", contadorDescargasLibro=" + contadorDescargasLibro +
+                ", biblioteca=" + biblioteca +
+                ", autores=" + autores ;
     }
 }
