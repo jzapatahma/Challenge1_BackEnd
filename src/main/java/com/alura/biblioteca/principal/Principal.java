@@ -131,7 +131,7 @@ public class Principal {
         System.out.println("\n*** Informacion Encontrada ***\n");
         System.out.println("Biblioteca: " + datos.nombre() + " Nro registros: " + datos.contador() + " Next: " + Optional.ofNullable(datos.link_siguiente()).orElse("Sin pagina siguiente") + " Previous: " + Optional.ofNullable(datos.link_anterior()).orElse("Sin pagina anterios") + "\n");
         for(LibroRecord lR : datos.libros()){
-            System.out.println("Libro: #-" + lR.idInterno() + " " + lR.titulo() + " " + lR.derechosAutor() + " " + lR.contadorDescargas() + " " + lR.languages());
+            System.out.println("Libro: # " + lR.idInterno() + " " + lR.titulo() + " " + lR.derechosAutor() + " " + lR.contadorDescargas() + " " + lR.languages());
             for(AutorRecord aR : lR.autores()){
                 System.out.println("   Autores: " + aR.nombre() + " " + aR.nacimiento() + " " + aR.fallecimiento());
             }
@@ -140,7 +140,9 @@ public class Principal {
     //
     public  void buscarPorTituloLibro(){
         System.out.println("\nBuscar Libro por Titulo en la API\n");
-        String tituloLibro =  "The"; // "Briar Rose";
+        System.out.println("Por favor ingrese el titulo del libro a buscar:");
+        Scanner teclado = new Scanner(System.in);
+        String tituloLibro =  teclado.nextLine(); //"The"; // "Briar Rose";
         String seccionUrl = "books/?search=" + tituloLibro.replace(" ", "%20");
         var datos = obtenerDatosAPI(seccionUrl);
         //
@@ -187,6 +189,7 @@ public class Principal {
     //
     public void listarAutoresVivos(){
         System.out.println("\nListar Autores Vivos en Determinado Año en la API\n");
+        System.out.println("Por favor ingrese el año:");
         Scanner entrada = new Scanner(System.in);
         int year = entrada.nextInt();
         var nacimiento = year - 100; // le sumamos 100 que es un estimado de vida humana, para consultar entre el año ingresado y 100 años menos de ese valor
