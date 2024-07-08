@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 // Buscar por nombre autor solamente http://gutendex.com/books/?search=dickens
 //
 public class Principal {
-
+    //
     private BibliotecaRepository bibliotecaRepository;
     private LibroRepository libroRepository;
     private AutorRepository autorRepository;
@@ -46,81 +46,105 @@ public class Principal {
         while (opcion != 0){
             System.out.println("\n");
             var menu = """
+                    ** Bienvenido al Sistema Literatura Gutendex **
+                    
+                    Elija la opcion API Blibioteca Gutendex
                         1 - Buscar Libro por Titulo
                         2 - Listar Libros Registrados
                         3 - Listar Autores Registrados
                         4 - Listar Autores Vivos en un Determinado Año
                         5 - Listar Libros por Idioma
-                        6 - Listar Bibioteca en la API
-                        7 - Guardar Biblioteca y Libros
-                        8 - Listar Biblioteca y Libros en Base de Datos
                     
-                        Busqueda en Base de Datos
-                        9 - Busqueda
-                        10 -Top 5 Libros mas Descargados
-                        11 -Descargas mayores a 1500
-                        12 -Descargas x mayores a x JPQL
-                        13 -Busque  por Titulo JPQL
-                        14 -Buque por Id Libro
+                    Elija la opcion Registros Guardados en la Base de Datos
+                        6 - Busqueda Libro por Titulo
+                        7 - Listar Libros Registrados
+                        8 - Listar Autores Registrados
+                        9 - Listar Autores Vivos en un Determinado Año
+                        10- Listar Libros por Idioma
+                    
+                    Otras opciones
+                        11- Top 5 Libros mas Descargados
+                        12- Descargas mayores a 1500
+                        13- Descargas x mayores a x JPQL
+                        14- Busque  por Titulo JPQL
+                        15- Buque por Id Libro
                     
                         0 - Salir
                     """;
             System.out.println(menu);
             System.out.println("\n   ** Elija la Opcion a Realizar ** ");
-            opcion = teclado.nextInt();
-            switch (opcion) {
-                case 1:
-                    buscarPorTituloLibro();
-                    break;
-                case 2:
-                    listarLibrosRegistrados();
-                    break;
-                case 3:
-                    listarAutoresRegistrados();
-                    break;
-                case 4:
-                    listarAutoresVivos();
-                    break;
-                case 5:
-                    listarLibrosPorIdiomas();
-                    break;
-
-                case 9:
-                    // En construccion
-                    //buscarLibroPorTituloBD();
-                    break;
-                case 10:
-                    // En construccion
-                    //buscarTop5Libros();
-                    break;
-                case 11:
-                    // En construccion
-                    // con Queries Nativas
-                    //buscarDescargasMayores1500();
-                    break;
-                case 12:
-                    // En construccion
-                    // con JPQL(Java Persistence Query Language)
-                    //buscarDescargasMayoresJPQL();
-                    break;
-                case 13:
-                    // En construccion
-                    //buscarTituloJPQL();
-                    break;
-                case 14:
-                    // En construccion
-                    //buscarIdlibro();
-                    break;
-                case 0:
-                    System.out.println("Es un placer servirle... hasta pronto.\n");
-                    break;
-                default:
-                    System.out.println("Opcion No Valida, vuelve a intentarlo.");
-                    break;
+            //opcion = teclado.hasNextInt() ? Integer.parseInt(teclado.nextLine()) : -1;
+            if(teclado.hasNextInt()){
+                opcion = teclado.nextInt();
+                switch (opcion) {
+                    case 1:
+                        buscarPorTituloLibroAPI();
+                        break;
+                    case 2:
+                        listarLibrosRegistradosAPI();
+                        break;
+                    case 3:
+                        listarAutoresRegistradosAPI();
+                        break;
+                    case 4:
+                        listarAutoresVivosAPI();
+                        break;
+                    case 5:
+                        listarLibrosPorIdiomasAPI();
+                        break;
+                    //
+                    case 6:
+                        buscarPorTituloLibroBD();
+                        break;
+                    case 7:
+                        listarLibrosRegistradosBD();
+                        break;
+                    case 8:
+                        listarAutoresRegistradosBD();
+                        break;
+                    case 9:
+                        listarAutoresVivosBD();
+                        break;
+                    case 10:
+                        listarLibrosPorIdiomasBD();
+                        break;
+                    //
+                    case 11:
+                        // con Queries Nativas
+                        //buscarDescargasMayores1500();
+                        break;
+                    case 12:
+                        // En construccion
+                        // con JPQL(Java Persistence Query Language)
+                        break;
+                    case 13:
+                        //buscarDescargasMayoresJPQL();
+                        break;
+                    case 14:
+                        // En construccion
+                        //buscarTituloJPQL();
+                        break;
+                    case 15:
+                        //buscarTop5Libros();
+                        break;
+                    //
+                    case 0:
+                        System.out.println("Es un placer servirle... hasta pronto.\n");
+                        break;
+                    default:
+                        System.out.println("Opcion No Valida, vuelve a intentarlo.");
+                        presioneEnterParaContinuar(teclado);
+                        break;
+                }
+                if(opcion!=0){
+                    presioneEnterParaContinuar(teclado);
+                }
+            } else {
+                System.out.println("Entrada de teclado no valida, intentalo de nuevo");
+                presioneEnterParaContinuar(teclado);
             }
         }
     }
-
     // Obtenemos los datos de la API y los mastramos en pantalla
     public BibliotecaRecord obtenerDatosAPI(String seccionUrl){
         var json = consumirAPI.obtenerDatos(URL_BASE+seccionUrl);
@@ -131,19 +155,63 @@ public class Principal {
         System.out.println("\n*** Informacion Encontrada ***\n");
         System.out.println("Biblioteca: " + datos.nombre() + " Nro registros: " + datos.contador() + " Next: " + Optional.ofNullable(datos.link_siguiente()).orElse("Sin pagina siguiente") + " Previous: " + Optional.ofNullable(datos.link_anterior()).orElse("Sin pagina anterios") + "\n");
         for(LibroRecord lR : datos.libros()){
-            System.out.println("Libro: # " + lR.idInterno() + " " + lR.titulo() + " " + lR.derechosAutor() + " " + lR.contadorDescargas() + " " + lR.languages());
+            System.out.println("Libro: # " + lR.idInterno() + " " + lR.titulo() + " " + lR.derechosAutor() + " " + lR.contadorDescargas() + " " + lR.lenguajes());
             for(AutorRecord aR : lR.autores()){
                 System.out.println("   Autores: " + aR.nombre() + " " + aR.nacimiento() + " " + aR.fallecimiento());
             }
         }
     }
     //
-    public  void buscarPorTituloLibro(){
+    public  void buscarPorTituloLibroAPI(){
         System.out.println("\nBuscar Libro por Titulo en la API\n");
         System.out.println("Por favor ingrese el titulo del libro a buscar:");
         Scanner teclado = new Scanner(System.in);
         String tituloLibro =  teclado.nextLine(); //"The"; // "Briar Rose";
         String seccionUrl = "books/?search=" + tituloLibro.replace(" ", "%20");
+        var datos = obtenerDatosAPI(seccionUrl);
+        if(datos != null){
+            if(!datos.libros().isEmpty()){
+                mostrarInfoAPI(datos);
+                guardarActualizarBD(datos);
+            } else {
+                System.out.println("\nLibro con Titulo: " + tituloLibro + " No se Encuentra en la Biblioteca Gutendex API");
+                //System.out.println("Presiona Enter para continuar...");
+                //teclado.nextLine();
+                //presioneEnterParaContinuar(teclado);
+            }
+        } else {
+            System.out.println("\nSin informacion de: " + tituloLibro + " en Biblioteca Gutendex API");
+//            System.out.println("Presiona Enter para continuar...");
+//            teclado.nextLine();
+            //presioneEnterParaContinuar(teclado);
+        }
+    }
+    public  void buscarPorTituloLibroBD(){
+        System.out.println("\nBuscar Libro por Titulo en la Base de Datos\n");
+        System.out.println("Por favor ingrese el titulo del libro a buscar:");
+        Scanner teclado = new Scanner(System.in);
+        String tituloLibro =  teclado.nextLine(); //"The"; // "Briar Rose";
+        Libro libroBD = libroRepository.findByTituloLibroContainsIgnoreCase(tituloLibro);
+        if(libroBD!=null){
+            Biblioteca biblioteca = libroBD.getBiblioteca();
+            System.out.println("Biblioteca: " + biblioteca.getNombreBiblioteca());
+            System.out.println("Nro de Registros: " + biblioteca.getContadorBiblioteca());
+            System.out.println("Pagina Siguiente: " + biblioteca.getSiguienteBiblioteca());
+            System.out.println("Pagina Anterior: " + biblioteca.getAnteriorBiblioteca());
+            //
+            for (Libro libro : List.of(libroBD)){
+                System.out.println("***  Libros ***");
+                System.out.println("-> Titulo: " + libro.getTituloLibro() + " Descargas " + libro.getContadorDescargasLibro() + " Copyrigth: " + libro.getDerechosAutorLibro());
+                for (Autor autor : libro.getAutores()){
+                    System.out.println("---> Autor: " + autor.getNombreAutor() + " Nacimiento: " + autor.getNacimientoAutor() + " Fallecimiento: " + autor.getFallecimientoAutor());
+                }
+            }
+        }
+    }
+    //
+    public void listarLibrosRegistradosAPI(){
+        System.out.println("\nListando Libros Registrados en la API...\n");
+        String seccionUrl = "books/?copyright=true";
         var datos = obtenerDatosAPI(seccionUrl);
         //
         if(!datos.libros().isEmpty()){
@@ -152,25 +220,26 @@ public class Principal {
         } else {
             System.out.println("Nombre de libro no encontrado el servicio de la API - Biblioteca Gutendex");
         }
-        //
     }
-    //
-    public void listarLibrosRegistrados(){
-        System.out.println("\nListar Libros Registrados en la API\n");
-        String seccionUrl = "books/?copyright=true";
-        var datos = obtenerDatosAPI(seccionUrl);
-        //
-        if(!datos.libros().isEmpty()){
-            mostrarInfoAPI(datos);
-            //guardarActualizarBD(datos);
-        } else {
-            System.out.println("Nombre de libro no encontrado el servicio de la API - Biblioteca Gutendex");
+    public void listarLibrosRegistradosBD(){
+        System.out.println("\nListando Registrados en la Base de Datos...\n");
+        List<Libro> libroBD = libroRepository.findAll();
+        if(!libroBD.isEmpty()){
+            Biblioteca biblioteca = libroBD.get(0).getBiblioteca();
+            System.out.println("\nBiblioteca: " + biblioteca.getNombreBiblioteca());
+            System.out.println("Nro de Registros: " + biblioteca.getContadorBiblioteca());
+            System.out.println("Pagina Siguiente: " + biblioteca.getSiguienteBiblioteca());
+            System.out.println("Pagina Anterior: " + biblioteca.getAnteriorBiblioteca());
+            //
+            System.out.println("\n***  Libros ***");
+            for (Libro libro : libroBD){
+                System.out.println("-> Titulo: " + libro.getTituloLibro() + " Descargas: " + libro.getContadorDescargasLibro() + " Copyrigth: " + libro.getDerechosAutorLibro());
+            }
         }
-        //
     }
     //
-    public void listarAutoresRegistrados(){
-        System.out.println("\nListar Autores Registrados en la API\n");
+    public void listarAutoresRegistradosAPI(){
+        System.out.println("\nListando Autores Registrados en la API...\n");
         String seccionUrl = "books/?copyright=true";
         var datos = obtenerDatosAPI(seccionUrl);
         //
@@ -185,10 +254,35 @@ public class Principal {
                     System.out.println( "Libro: " + libro.idInterno() + " - " + libro.titulo() +
                             " --> Autor: " + autor.nombre() + " Nacimiento: " + autor.nacimiento() + " Fallecimiento: " + autor.fallecimiento());
                 });
+        //
+        if(!datos.libros().isEmpty()){
+            //mostrarInfoAPI(datos);
+            guardarActualizarBD(datos);
+        } else {
+            System.out.println("Nombre de libro no encontrado el servicio de la API - Biblioteca Gutendex");
+        }
+
+    }
+    public void listarAutoresRegistradosBD(){
+        System.out.println("\nListando Autores Registrados en la Base de Datos...\n");
+        List<Libro> libroBD  = libroRepository.findAll().stream().distinct().toList();
+        if(!libroBD.isEmpty()){
+            Biblioteca biblioteca = libroBD.get(0).getBiblioteca();
+            System.out.println("Biblioteca: " + biblioteca.getNombreBiblioteca());
+            System.out.println("Nro de Registros: " + biblioteca.getContadorBiblioteca());
+            System.out.println("Pagina Siguiente: " + biblioteca.getSiguienteBiblioteca());
+            System.out.println("Pagina Anterior: " + biblioteca.getAnteriorBiblioteca());
+            //
+            for (Libro libro : libroBD){
+                for (Autor autor : libro.getAutores()){
+                    System.out.println("---> Autor: " + autor.getNombreAutor() + " Nacimiento: " + autor.getNacimientoAutor() + " Fallecimiento: " + autor.getFallecimientoAutor());
+                }
+            }
+        }
     }
     //
-    public void listarAutoresVivos(){
-        System.out.println("\nListar Autores Vivos en Determinado Año en la API\n");
+    public void listarAutoresVivosAPI(){
+        System.out.println("\nListando Autores Vivos en Determinado Año en la API...\n");
         System.out.println("Por favor ingrese el año:");
         Scanner entrada = new Scanner(System.in);
         int year = entrada.nextInt();
@@ -212,20 +306,40 @@ public class Principal {
         //
         System.out.println("\nAutores vivos en el año: " + year + "\n");
         autoresTreeSet.stream()  // parece ser que funcion, trae solo aquellos nacidos entre esas fecha y que su muerte sea superior al año consultado por el usurio, aqui seria 75 años promedio que debe ser sumado para hallar el valor del año de nacimiento.
-                .filter(autor -> (autor.nacimiento() >= nacimiento && (autor.nacimiento() <= year) && (autor.fallecimiento() >= year)   ))
-                //.forEach(System.out::println);
+                .filter(autor -> (autor.fallecimiento() > year && autor.nacimiento() <= year))
                 .forEach(autor -> System.out.println(autor + " Tiempo de Vida = " + (autor.fallecimiento() - autor.nacimiento())));
         System.out.println("\nFin de los resultados");
     }
+    public void listarAutoresVivosBD(){
+        System.out.println("\nListando Autores Vivos Registrados en la Base de Datos...\n");
+        System.out.println("Por favor ingrese el año");
+        Scanner teclado = new Scanner(System.in);
+        Integer year = teclado.nextInt();
+        List<Autor> autorBD = libroRepository.findAll().stream()
+                .flatMap(libro -> libro.getAutores().stream())  // flatMap to get a stream of autores from each libro
+                .filter(autor -> ((autor.getFallecimientoAutor() > year && autor.getNacimientoAutor() <= year))) // filtra y trae solo autores nacidos antes o en ese mismo año y estando vivos en ese año de consulta.
+                .distinct()  // Get distinct autores (assuming names are unique identifiers)
+                .toList();
+        if(!autorBD.isEmpty()){
+            Biblioteca biblioteca = autorBD.get(0).getLibro().getBiblioteca();
+            System.out.println("Biblioteca: " + biblioteca.getNombreBiblioteca());
+            System.out.println("Nro de Registros: " + biblioteca.getContadorBiblioteca());
+            System.out.println("Pagina Siguiente: " + biblioteca.getSiguienteBiblioteca());
+            System.out.println("Pagina Anterior: " + biblioteca.getAnteriorBiblioteca());
+            for (Autor autor : autorBD){
+                System.out.println("---> Autor: " + autor.getNombreAutor() + " Nacimiento: " + autor.getNacimientoAutor() + " Fallecimiento: " + autor.getFallecimientoAutor());
+            }
+        }
+    }
     //
-    public void listarLibrosPorIdiomas(){
+    public void listarLibrosPorIdiomasAPI(){
         System.out.println("Ingresa uno o varios idiomas, separados por comas: es,fr,en u otros");
         Scanner idiomaBuscar = new Scanner(System.in);
         String idiomas = idiomaBuscar.nextLine();
         String seccionUrl = "books/?languages="+idiomas;
+        System.out.println("\nListando Libros por Idioma(s): " + idiomas + " ...");
         var datos = obtenerDatosAPI(seccionUrl);
         //
-        System.out.println("\nListar Libros en los Idioma(s): " + idiomas );
         if(!datos.libros().isEmpty()){
             mostrarInfoAPI(datos);
             //guardarActualizarBD(datos);
@@ -233,110 +347,156 @@ public class Principal {
             System.out.println("Nombre de libro no encontrado el servicio de la API - Biblioteca Gutendex");
         }
     }
-
-    public void guardarActualizarBD(BibliotecaRecord datos){
+    public void listarLibrosPorIdiomasBD(){
+        System.out.println("Ingresa uno o varios idiomas, separados por comas: es,fr,en u otros");
         Scanner teclado = new Scanner(System.in);
-        System.out.println("\nDesea guardar algun libro en la base de datos?: Elija 1=Si o 2=No");
-        int opcionGuardar = teclado.nextInt();
-        if (opcionGuardar==1){
-            System.out.println("\nPor favor ingresa el Nro del libro:");
-            int nroLibro = teclado.nextInt();
-            // Vefificamos que el IdLibro digitado por el usuario si esta en datos de la consulta a la API
-            Optional<LibroRecord> libroEnAPI = datos.libros().stream()
-                    .filter(libro -> libro.idInterno() == nroLibro)
-                    .findFirst();
-            if(libroEnAPI.isPresent()){
-                // Ahora verificamos si esta en la base de datos.
-                Libro libroEnBD = libroRepository.buscarPorIdLibroJ(nroLibro);
-                Biblioteca biblioteca = new Biblioteca();
-                if(libroEnBD != null){ // Esta opcion permite modificar las 3 entidaades, menos el atributo nombre de biblioteca porque es de tipo Unico.
-                    // Solo se actualizan aquellos atributos de las entidades que sean modificadas,
-                    System.out.println("\nSe actualizaran los atributos que presenten alguna modificacion en las 3 entidades\n");
-                    biblioteca = libroEnBD.getBiblioteca();
-                    biblioteca.setContadorBiblioteca(datos.contador());
-                    biblioteca.setSiguienteBiblioteca(datos.link_siguiente() + "-B1");
-                    biblioteca.setAnteriorBiblioteca(datos.link_anterior()+ "-B1");
-                    // Actualizamos el libro
-                    libroEnBD.setIdLibro(libroEnAPI.get().idInterno());
-                    libroEnBD.setTituloLibro(libroEnAPI.get().titulo() + "-L1");
-                    libroEnBD.setContadorDescargasLibro(libroEnAPI.get().contadorDescargas());
-                    libroEnBD.setDerechosAutorLibro(libroEnAPI.get().derechosAutor());
-                    // Actualizamos los autores
-                    List<Autor> listaAutores = new ArrayList<>();
-                    for (AutorRecord autorAPI : libroEnAPI.get().autores()){
-                        Optional<Autor> autorBD = autorRepository.findByNombreAutor(autorAPI.nombre());
-                        Autor autorNuevo = new Autor();
-                        if(autorBD.isPresent()){
-                            autorNuevo = autorBD.get();
-                            autorNuevo.setNombreAutor(autorAPI.nombre() + "-A1x");
-                            autorNuevo.setNacimientoAutor(autorAPI.nacimiento());
-                            autorNuevo.setFallecimientoAutor(autorAPI.fallecimiento() + 3000);
-                        } else {
-                            autorNuevo.setNombreAutor(autorAPI.nombre() + "-A1-nuevo");
-                            autorNuevo.setNacimientoAutor(autorAPI.nacimiento());
-                            autorNuevo.setFallecimientoAutor(autorAPI.fallecimiento() + 3000);
-                        }
-                        listaAutores.add(autorNuevo);
-                    }
-                    libroEnBD.setAutores(listaAutores);
-                    biblioteca.setLibros(List.of(libroEnBD)); // list.of nos permite castear la clase libro por una lista
-                    bibliotecaRepository.save(biblioteca);
-                } else {
-                    System.out.println("\nLibro: " + nroLibro + " No se existe en la base datos\n");
-                    biblioteca = bibliotecaRepository.findByNombreBiblioteca("Biblioteca-Gutendex");
-                    if(biblioteca==null){ // Si es nula la biblioteca es nueva, por lo tanto el libro y sus autores igual
-                        System.out.println("Biblioteca No existe, procedemos a guardar los registros de la biblioteca, su libro y los autores\n");
-                        Biblioteca bNueva = new Biblioteca();
-                        bNueva.setContadorBiblioteca(datos.contador());
-                        bNueva.setSiguienteBiblioteca(datos.link_siguiente());
-                        bNueva.setNombreBiblioteca("Biblioteca-Gutendex");
-                        bNueva.setAnteriorBiblioteca(datos.link_anterior());
-                        List<Libro> listaNuevoLibro = new ArrayList<>();
-                        for(LibroRecord l : libroEnAPI.stream().toList()){
-                            Libro libroNuevo = new Libro();
-                            libroNuevo.setContadorDescargasLibro(l.contadorDescargas());
-                            libroNuevo.setDerechosAutorLibro(l.derechosAutor());
-                            libroNuevo.setIdLibro(l.idInterno()); libroNuevo.setTituloLibro(l.titulo());
-                            List<Autor> listaAutores = new ArrayList<>();
-                            for(AutorRecord a : l.autores()){
-                                Autor autorNuevo = new Autor();
-                                autorNuevo.setFallecimientoAutor(a.fallecimiento());
-                                autorNuevo.setNacimientoAutor(a.nacimiento());
-                                autorNuevo.setNombreAutor(a.nombre());
-                                listaAutores.add(autorNuevo);
-                            }
-                            libroNuevo.setAutores(listaAutores);
-                            listaNuevoLibro.add(libroNuevo);
-                        }
-                        bNueva.setLibros(listaNuevoLibro);
-                        bibliotecaRepository.save(bNueva);
-                    }else { // Si existe la biblioteca, se procede a ingresar el libro y sus autores.
-                        System.out.println("\nBiblioteca Existe, procedemos a guardar los registros su libro y los autores\n");
-                        List<Libro> listaNuevoLibro = new ArrayList<>();
-                        for(LibroRecord l : libroEnAPI.stream().toList()){
-                            Libro libroNuevo = new Libro();
-                            libroNuevo.setContadorDescargasLibro(l.contadorDescargas());
-                            libroNuevo.setDerechosAutorLibro(l.derechosAutor());
-                            libroNuevo.setIdLibro(l.idInterno()); libroNuevo.setTituloLibro(l.titulo());
-                            List<Autor> listaAutores = new ArrayList<>();
-                            for(AutorRecord a : l.autores()){
-                                Autor autorNuevo = new Autor();
-                                autorNuevo.setFallecimientoAutor(a.fallecimiento());
-                                autorNuevo.setNacimientoAutor(a.nacimiento());
-                                autorNuevo.setNombreAutor(a.nombre());
-                                listaAutores.add(autorNuevo);
-                            }
-                            libroNuevo.setAutores(listaAutores);
-                            listaNuevoLibro.add(libroNuevo);
-                        }
-                        biblioteca.setLibros(listaNuevoLibro);
-                        bibliotecaRepository.save(biblioteca);
-                    }
+        String idiomas =  teclado.nextLine(); //"The"; // "Briar Rose";
+        System.out.println("\nListando Libros por Idioma(s): " + idiomas + " ...");
+        List<Libro> libroBD = libroRepository.findByLenguajesContainsIgnoreCase(idiomas);
+        if(libroBD!=null){
+            Biblioteca biblioteca = libroBD.get(0).getBiblioteca();
+            System.out.println("Biblioteca: " + biblioteca.getNombreBiblioteca());
+            System.out.println("Nro de Registros: " + biblioteca.getContadorBiblioteca());
+            System.out.println("Pagina Siguiente: " + biblioteca.getSiguienteBiblioteca());
+            System.out.println("Pagina Anterior: " + biblioteca.getAnteriorBiblioteca());
+            //
+            System.out.println("***  Libros ***");
+            for (Libro libro : libroBD){
+                System.out.println("-> Titulo: " + libro.getTituloLibro() + " Descargas " + libro.getContadorDescargasLibro() + " Copyrigth: " + libro.getDerechosAutorLibro() + " Lenguajes: " + libro.getLenguajes());
+                for (Autor autor : libro.getAutores()){
+                    System.out.println("---> Autor: " + autor.getNombreAutor() + " Nacimiento: " + autor.getNacimientoAutor() + " Fallecimiento: " + autor.getFallecimientoAutor());
                 }
-            } else {
-                System.out.println("Nro de libro no se encuentra en la consulta, verifique el listado en pantalla, e intentelo de nuevo");
             }
         }
     }
+    //
+    public void guardarActualizarBD(BibliotecaRecord datos){
+        Scanner teclado = new Scanner(System.in);
+        System.out.println("\nDesea guardar algun libro en la base de datos?: Elija 1=Si o 2=No");
+        if(teclado.hasNextInt()){
+            int opcionGuardar = teclado.nextInt();
+            if (opcionGuardar==1){
+                System.out.println("\nPor favor ingresa el Nro del libro:");
+                int nroLibro = teclado.nextInt();
+                // Vefificamos que el IdLibro digitado por el usuario si esta en datos de la consulta a la API
+                Optional<LibroRecord> libroEnAPI = datos.libros().stream()
+                        .filter(libro -> libro.idInterno() == nroLibro)
+                        .findFirst();
+                if(libroEnAPI.isPresent()){
+                    // Ahora verificamos si esta en la base de datos.
+                    Libro libroEnBD = libroRepository.buscarPorIdLibroJ(nroLibro);
+                    Biblioteca biblioteca = new Biblioteca();
+                    if(libroEnBD != null){ // Esta opcion permite modificar las 3 entidaades, menos el atributo nombre de biblioteca porque es de tipo Unico.
+                        // Solo se actualizan aquellos atributos de las entidades que sean modificadas,
+                        //System.out.println("\nSe actualizaran los atributos que presenten alguna modificacion en las 3 entidades\n");
+                        biblioteca = libroEnBD.getBiblioteca();
+                        biblioteca.setContadorBiblioteca(datos.contador());
+                        biblioteca.setSiguienteBiblioteca(datos.link_siguiente());
+                        biblioteca.setAnteriorBiblioteca(datos.link_anterior());
+                        // Actualizamos el libro
+                        libroEnBD.setIdLibro(libroEnAPI.get().idInterno());
+                        libroEnBD.setTituloLibro(libroEnAPI.get().titulo());
+                        libroEnBD.setContadorDescargasLibro(libroEnAPI.get().contadorDescargas());
+                        libroEnBD.setDerechosAutorLibro(libroEnAPI.get().derechosAutor());
+                        libroEnBD.setLenguajes(libroEnAPI.get().lenguajes().toString());
+                        // Actualizamos los autores
+                        List<Autor> listaAutores = new ArrayList<>();
+                        for (AutorRecord autorAPI : libroEnAPI.get().autores()){
+                            Optional<Autor> autorBD = autorRepository.findByNombreAutor(autorAPI.nombre());
+                            Autor autorNuevo = new Autor();
+                            if(autorBD.isPresent()){
+                                autorNuevo = autorBD.get();
+                                autorNuevo.setNombreAutor(autorAPI.nombre());
+                                autorNuevo.setNacimientoAutor(autorAPI.nacimiento());
+                                autorNuevo.setFallecimientoAutor(autorAPI.fallecimiento());
+                            } else {
+                                autorNuevo.setNombreAutor(autorAPI.nombre());
+                                autorNuevo.setNacimientoAutor(autorAPI.nacimiento());
+                                autorNuevo.setFallecimientoAutor(autorAPI.fallecimiento());
+                            }
+                            listaAutores.add(autorNuevo);
+                        }
+                        libroEnBD.setAutores(listaAutores);
+                        biblioteca.setLibros(List.of(libroEnBD)); // list.of nos permite castear la clase libro por una lista
+                        bibliotecaRepository.save(biblioteca);
+                    } else {
+                        //System.out.println("\nLibro: " + nroLibro + " No se existe en la base datos\n");
+                        biblioteca = bibliotecaRepository.findByNombreBiblioteca("Biblioteca-Gutendex");
+                        if(biblioteca==null){ // Si es nula la biblioteca es nueva, por lo tanto el libro y sus autores igual
+                            //System.out.println("Biblioteca No existe, procedemos a guardar los registros de la biblioteca, su libro y los autores\n");
+                            Biblioteca bNueva = new Biblioteca();
+                            bNueva.setContadorBiblioteca(datos.contador());
+                            bNueva.setSiguienteBiblioteca(datos.link_siguiente());
+                            bNueva.setNombreBiblioteca("Biblioteca-Gutendex");
+                            bNueva.setAnteriorBiblioteca(datos.link_anterior());
+                            List<Libro> listaNuevoLibro = new ArrayList<>();
+                            for(LibroRecord l : libroEnAPI.stream().toList()){
+                                Libro libroNuevo = new Libro();
+                                libroNuevo.setContadorDescargasLibro(l.contadorDescargas());
+                                libroNuevo.setDerechosAutorLibro(l.derechosAutor());
+                                libroNuevo.setIdLibro(l.idInterno()); libroNuevo.setTituloLibro(l.titulo());
+                                libroNuevo.setLenguajes(l.lenguajes().toString());
+                                List<Autor> listaAutores = new ArrayList<>();
+                                for(AutorRecord a : l.autores()){
+                                    Autor autorNuevo = new Autor();
+                                    autorNuevo.setFallecimientoAutor(a.fallecimiento());
+                                    autorNuevo.setNacimientoAutor(a.nacimiento());
+                                    autorNuevo.setNombreAutor(a.nombre());
+                                    listaAutores.add(autorNuevo);
+                                }
+                                libroNuevo.setAutores(listaAutores);
+                                listaNuevoLibro.add(libroNuevo);
+                            }
+                            bNueva.setLibros(listaNuevoLibro);
+                            bibliotecaRepository.save(bNueva);
+                        }else { // Si existe la biblioteca, se procede a ingresar el libro y sus autores.
+                            //System.out.println("\nBiblioteca Existe, procedemos a guardar los registros su libro y los autores\n");
+                            List<Libro> listaNuevoLibro = new ArrayList<>();
+                            for(LibroRecord l : libroEnAPI.stream().toList()){
+                                Libro libroNuevo = new Libro();
+                                libroNuevo.setContadorDescargasLibro(l.contadorDescargas());
+                                libroNuevo.setDerechosAutorLibro(l.derechosAutor());
+                                libroNuevo.setIdLibro(l.idInterno()); libroNuevo.setTituloLibro(l.titulo());
+                                libroNuevo.setLenguajes(l.lenguajes().toString());
+                                List<Autor> listaAutores = new ArrayList<>();
+                                for(AutorRecord a : l.autores()){
+                                    Autor autorNuevo = new Autor();
+                                    autorNuevo.setFallecimientoAutor(a.fallecimiento());
+                                    autorNuevo.setNacimientoAutor(a.nacimiento());
+                                    autorNuevo.setNombreAutor(a.nombre());
+                                    listaAutores.add(autorNuevo);
+                                }
+                                libroNuevo.setAutores(listaAutores);
+                                listaNuevoLibro.add(libroNuevo);
+                            }
+                            biblioteca.setLibros(listaNuevoLibro);
+                            bibliotecaRepository.save(biblioteca);
+                        }
+                    }
+                    System.out.println("\n*** Biblioteca, Libro y Autores, actualizados satisfactoriamente en Base de Datos\n");
+                    //presioneEnterParaContinuar(teclado);
+                } else {
+                    System.out.println("Nro de libro no se encuentra en la consulta, verifique el listado en pantalla, e intentelo de nuevo");
+                    //presioneEnterParaContinuar(teclado);
+                }
+            } else {
+                //System.out.println("\nPresiones  ");
+                if(opcionGuardar==2){
+                    System.out.println("*** Regresar al Menu Principal");
+                } else {
+                    System.out.println("Entrada de teclado no valida, intentalo de nuevo");
+                }
+            }
+        } else {
+            System.out.println("Entrada de teclado no valida, intentalo de nuevo");
+            //presioneEnterParaContinuar(teclado);
+            //guardarActualizarBD(datos);
+        }
+    }
 
+    public void presioneEnterParaContinuar(Scanner teclado){
+        System.out.println("\nPresiona Enter para continuar...");
+        teclado.nextLine(); // toca ponerlo doble, es un defecto que tiene la clase Scanner.
+        teclado.nextLine(); // porque el primer enter de la opcion es tomado por el siguiente nextline, dejando pasar la espera del cursor
+    }
 }

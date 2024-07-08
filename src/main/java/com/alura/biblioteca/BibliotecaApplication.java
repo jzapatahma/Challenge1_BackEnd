@@ -29,6 +29,5 @@ public class BibliotecaApplication implements CommandLineRunner {
 		Principal principal = new Principal(bibliotecaRepository, libroRepository, autorRepository);
 		principal.menu();
 
-
 	} // Fin public void run
 }

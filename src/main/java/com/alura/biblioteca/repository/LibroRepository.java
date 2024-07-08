@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface LibroRepository extends JpaRepository<Libro, Long> {
 
@@ -45,5 +47,9 @@ public interface LibroRepository extends JpaRepository<Libro, Long> {
             "JOIN tbl_autores a ON l.idlro = a.libro_idlro " +
             "WHERE l.id_libro = :idLibro", nativeQuery = true)
     Libro buscarPorIdLibroJ (int idLibro);
+
+    Libro findByTituloLibroContainsIgnoreCase(String nombreLibro);
+
+    List<Libro> findByLenguajesContainsIgnoreCase(String idiomas);
 
 }

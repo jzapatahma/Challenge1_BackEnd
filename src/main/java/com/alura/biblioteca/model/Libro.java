@@ -16,7 +16,7 @@ public class Libro {
     private Boolean derechosAutorLibro;
     //@Column(name="contadorDescargas") // se usa para ponerle otro nombre distinto en la base de daotos.
     private Integer contadorDescargasLibro;
-    //private List<String> languages;
+    private String lenguajes;
     @ManyToOne
     //@JoinColumn(name = "biblioteca_idbca")
     private Biblioteca biblioteca;
@@ -31,6 +31,7 @@ public class Libro {
         this.tituloLibro = lr.titulo();
         this.derechosAutorLibro = lr.derechosAutor();
         this.contadorDescargasLibro = lr.contadorDescargas();
+        this.lenguajes = lr.lenguajes().toString();
     }
 
     public Long getIdlro() {
@@ -72,6 +73,14 @@ public class Libro {
         this.contadorDescargasLibro = contadorDescargasLibro;
     }
 
+    public String getLenguajes() {
+        return lenguajes;
+    }
+
+    public void setLenguajes(String lenguajes) {
+        this.lenguajes = lenguajes;
+    }
+
     public List<Autor> getAutores() {
         return autores;
     }
@@ -91,12 +100,14 @@ public class Libro {
 
     @Override
     public String toString() {
-        return  "  Idlro=" + Idlro +
-                ", idLibro=" + idLibro +
-                ", tituloLibro='" + tituloLibro + '\'' +
-                ", derechosAutorLibro=" + derechosAutorLibro +
-                ", contadorDescargasLibro=" + contadorDescargasLibro +
-                ", biblioteca=" + biblioteca +
-                ", autores=" + autores ;
+        return
+                "Idlro=" + Idlro +
+                        ", idLibro=" + idLibro +
+                        ", tituloLibro='" + tituloLibro + '\'' +
+                        ", derechosAutorLibro=" + derechosAutorLibro +
+                        ", contadorDescargasLibro=" + contadorDescargasLibro +
+                        ", lenguajes='" + lenguajes + '\'' +
+                        ", biblioteca=" + biblioteca +
+                        ", autores=" + autores ;
     }
 }

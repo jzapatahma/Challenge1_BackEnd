@@ -12,5 +12,5 @@ public record LibroRecord(
         @JsonAlias("copyright")         Boolean derechosAutor,
         @JsonAlias("download_count")    Integer contadorDescargas,
         @JsonAlias("authors") List<AutorRecord> autores,
-        @JsonAlias("languages")         List<String> languages
+        @JsonAlias("languages")         List<String> lenguajes
 ) { }
